@@ -1,4 +1,3 @@
-
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from telegram import Bot
@@ -32,9 +31,9 @@ async def send_telegram_message(bot_token, chat_id, message_text, image_url=None
     bot = Bot(token=bot_token)
     try:
         if image_url:
-            await bot.send_photo(chat_id=chat_id, photo=image_url, caption=message_text, parse_mode=\'HTML\')
+            await bot.send_photo(chat_id=chat_id, photo=image_url, caption=message_text, parse_mode='HTML')
         else:
-            await bot.send_message(chat_id=chat_id, text=message_text, parse_mode=\'HTML\')
+            await bot.send_message(chat_id=chat_id, text=message_text, parse_mode='HTML')
         print(f"Mensagem enviada com sucesso para {chat_id}")
     except Exception as e:
         print(f"Erro ao enviar mensagem para {chat_id}: {e}")
@@ -42,7 +41,7 @@ async def send_telegram_message(bot_token, chat_id, message_text, image_url=None
 def get_sheet_data(sheet_name, worksheet_name, credentials_json):
     try:
         creds_dict = json.loads(credentials_json)
-        scope = [\'https://spreadsheets.google.com/feeds\', \'https://www.googleapis.com/auth/drive\']
+        scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
         creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         client = gspread.authorize(creds)
 
@@ -65,7 +64,7 @@ async def process_offers():
     try:
         channel_id = int(TELEGRAM_CHANNEL_ID_STR.strip())
     except ValueError:
-        print(f"ERRO: TELEGRAM_CHANNEL_ID inválido: \'{TELEGRAM_CHANNEL_ID_STR}\'. Deve ser um número inteiro (ex: -1001234567890).")
+        print(f"ERRO: TELEGRAM_CHANNEL_ID inválido: '{TELEGRAM_CHANNEL_ID_STR}'. Deve ser um número inteiro (ex: -1001234567890).")
         return
 
     offers = get_sheet_data(GOOGLE_SHEET_NAME, WORKSHEET_NAME, GOOGLE_CREDENTIALS_JSON)
@@ -77,9 +76,9 @@ async def process_offers():
     print(f"Encontradas {len(offers)} ofertas na planilha.")
 
     for offer in offers:
-        offer_text = offer.get(\'Texto da Oferta\', \'Oferta sem descrição.\')
-        product_link = offer.get(\'Link do Produto\', \'#\')
-        image_url = offer.get(\'Imagem\', None)
+        offer_text = offer.get('Texto da Oferta', 'Oferta sem descrição.')
+        product_link = offer.get('Link do Produto', '#')
+        image_url = offer.get('Imagem', None)
 
         message = f"<b>{offer_text}</b>\n\n🛒 <a href=\"{product_link}\">PEGUE A OFERTA AQUI!</a>\n\n#oferta #achadinhos #promoção"
 
@@ -115,5 +114,5 @@ async def main():
     # Inicia o loop do bot
     await bot_loop()
 
-if __name__ == \'__main__\':
+if __name__ == '__main__':
     asyncio.run(main())
